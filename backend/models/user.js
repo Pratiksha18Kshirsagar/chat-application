@@ -1,24 +1,29 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = new Sequelize('sqlite::memory:');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../utils/db');
 
 const User = sequelize.define(
   'User',
   {
-    // Model attributes are defined here
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      allowNull: false,
+      primaryKey: true
+    },
     Name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
     Email: {
       type: DataTypes.STRING,
-        allowNull: true,
+      allowNull: true,
     },
-    Phone:{
-        type: DataTypes.INTEGER,
+    Phone: {
+      type: DataTypes.INTEGER,
     },
-    Password:{
-        type: DataTypes.STRING,
-        allowNull: false,
+    Password: {
+      type: DataTypes.STRING,
+      allowNull: false,
     }
   }
 );
