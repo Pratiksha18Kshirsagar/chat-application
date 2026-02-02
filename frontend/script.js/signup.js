@@ -1,4 +1,4 @@
-const baseURL = 'http://localhost:3000';
+const baseURL = 'http://localhost:4000';
 
 const form  = document.getElementById('signup-form');
 form.addEventListener('submit', async (e)=>{
