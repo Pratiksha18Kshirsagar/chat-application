@@ -4,9 +4,14 @@ const jwt = require('jsonwebtoken');
 
 const addUser = async (req, res) => {
     const { name, email, phone, password } = req.body;
+    console.log(req.body);
     try {
         if (!name || !email || !phone || !password) {
             return res.status(400).json({ message: "All fields are required" });
+        }
+        const user = await UserModel.findOne({ where: { Email: email } });
+        if (user) {
+            return res.status(409).json({ message: "User already exists" });
         }
         const hashedPassword = await bcrypt.hash(password, 10); // 10 = salt rounds
         const newUser = await UserModel.create({

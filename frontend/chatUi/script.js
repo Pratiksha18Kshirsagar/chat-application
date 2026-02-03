@@ -6,7 +6,12 @@ const baseurl = "http://localhost:4000";
 const token = localStorage.getItem("token");
 
 // ---------------- SOCKET.IO ---------------- //
-const socket = io("http://localhost:4000");
+const socket = io("http://localhost:4000", { auth: { token: token } });
+
+
+socket.on("connect_error", (err) => {
+  console.error(err.message);
+});
 
 socket.on("connect", () => {
   console.log("Connected to server:", socket.id);
@@ -14,11 +19,15 @@ socket.on("connect", () => {
 
 // receive message from server
 socket.on("message", (data) => {
+  console.log(data.user + ": " + data.message);
   const msgdiv = document.createElement("div");
-  msgdiv.innerText = data;
+  msgdiv.innerText = `${data.user}: ${data.message}`;
   messages.appendChild(msgdiv);
   messages.scrollTop = messages.scrollHeight;
 });
+
+
+
 
 // ---------------- FORM SUBMIT ---------------- //
 form.addEventListener("submit", async (e) => {
@@ -56,7 +65,7 @@ const loadMessages = async () => {
   messages.scrollTop = messages.scrollHeight;
 };
 
-loadMessages();
+// loadMessages();
 
 // ---------------- DISCONNECT ---------------- //
 socket.on("disconnect", () => {

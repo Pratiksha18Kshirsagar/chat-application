@@ -1,26 +1,26 @@
 const baseURL = 'http://localhost:4000';
 
-const form  = document.getElementById('signup-form');
-form.addEventListener('submit', async (e)=>{
+const form = document.getElementById('signup-form');
+form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
     const phone = document.getElementById('phoneno').value;
-    const password = document.getElementById('password').value; 
-    try{
-        const res = await axios.post(`${baseURL}/user/signup`,{
+    const password = document.getElementById('password').value;
+    try {
+        const res = await axios.post(`${baseURL}/user/signup`, {
             name,
             email,
             phone,
             password
-        }); 
-        if(res.data.status === 'success'){
-            alert('Signup successful');
-            window.location.href = '/login.html';
-        }   
-    }catch(err){
+        });
+
+        alert('Signup successful');
+        window.location.href = '../views/login.html';
+
+    } catch (err) {
         alert(err.response.data.message);
     }
-}); 
+});
 
 
