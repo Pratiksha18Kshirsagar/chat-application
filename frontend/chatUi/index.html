@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Chat Window</title>
   <link rel="stylesheet" href="../chatUi/style.css">
 </head>
+
 <body>
 
   <div class="chat-container">
@@ -13,7 +15,7 @@
     </div>
 
     <div class="chat-messages" id="chatMessages">
-      
+
     </div>
 
     <form class="chat-input" id="chatForm">
@@ -21,8 +23,11 @@
       <button type="submit">Send</button>
     </form>
   </div>
-
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script src="../chatUi/script.js"></script>
+
+
 </body>
+
 </html>
