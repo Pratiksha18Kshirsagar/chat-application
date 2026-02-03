@@ -1,30 +1,40 @@
-const express = require('express');
+const express = require("express");
+const http = require("http");
+const cors = require("cors");
+const sequelize = require("./utils/db");
+
+const userRoutes = require("./routes/userRoutes");
+const chatRoutes = require("./routes/chatRoutes");
+require("./models/index");
+
 const app = express();
-const port = 4000;
-const sequelize = require('./utils/db');
-const userRoutes = require('./routes/userRoutes');
-const chatRoutes = require('./routes/chatRoutes');
-require('./models/index');
-const cors = require('cors');
+const PORT = 4000;
 
+// middleware
 app.use(cors());
-app.use(express.json()); // 
-app.use(express.urlencoded({ extended: true })); 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.use('/user', userRoutes);
-app.use('/chat', chatRoutes);
+// routes
+app.use("/user", userRoutes);
+app.use("/chat", chatRoutes);
 
+// create http server
+const server = http.createServer(app);
 
+// attach socket.io
+require("./socket")(server);
 
-sequelize.sync()
+// start server after DB sync
+sequelize
+  .sync({ alter: true })
   .then(() => {
-    app.listen(port, () => {
-      console.log(`Server is running on http://localhost:${port}`);
+    server.listen(PORT, () => {
+      console.log(`Server running on http://localhost:${PORT}`);
     });
   })
-  .catch(err => {
-    console.error('Database sync failed:', err);
+  .catch((err) => {
+    console.error("Database sync failed:", err);
   });
 
-
-module.exports = app; 
+module.exports = app;

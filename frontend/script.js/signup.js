@@ -5,13 +5,13 @@ form.addEventListener('submit', async (e)=>{
     e.preventDefault();
     const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
-    const phoneno = document.getElementById('phoneno').value;
+    const phone = document.getElementById('phoneno').value;
     const password = document.getElementById('password').value; 
     try{
         const res = await axios.post(`${baseURL}/user/signup`,{
             name,
             email,
-            phoneno,
+            phone,
             password
         }); 
         if(res.data.status === 'success'){
