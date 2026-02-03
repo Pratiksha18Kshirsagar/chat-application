@@ -2,6 +2,7 @@ const express = require("express");
 const http = require("http");
 const cors = require("cors");
 const sequelize = require("./utils/db");
+const setupSocket = require("./socket_io/socket");
 
 const userRoutes = require("./routes/userRoutes");
 const chatRoutes = require("./routes/chatRoutes");
@@ -23,7 +24,7 @@ app.use("/chat", chatRoutes);
 const server = http.createServer(app);
 
 // attach socket.io
-require("./socket")(server);
+setupSocket(server);
 
 // start server after DB sync
 sequelize
