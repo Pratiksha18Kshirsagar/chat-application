@@ -1,6 +1,9 @@
 const { Server } = require("socket.io");
 const socketAuthMiddleware = require("./middleware");
 
+const chatHandler = require("./handler/chat");
+const personalChatHandler = require("./handler/personalChat");
+
 const setupSocket = (server) => {
     const io = new Server(server, {
         cors: {
@@ -24,6 +27,10 @@ const setupSocket = (server) => {
                 message: data
             });
         });
+
+        // attach handlers
+        chatHandler(io, socket);
+        personalChatHandler(io, socket);
 
         socket.on("disconnect", () => {
             console.log("User disconnected:", socket.user.id);
