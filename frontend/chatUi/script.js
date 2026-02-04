@@ -1,4 +1,3 @@
-// ---------------- DOM ELEMENTS ---------------- //
 const form = document.getElementById("chatForm");
 const input = document.getElementById("messageInput");
 const messages = document.getElementById("chatMessages");
@@ -10,7 +9,7 @@ const joinBtn = document.getElementById("joinBtn");
 const baseurl = "http://localhost:4000";
 const token = localStorage.getItem("token");
 const myEmail = localStorage.getItem("email");
-
+let roomId = null;
 // ---------------- SOCKET.IO CONNECTION ---------------- //
 const socket = io("http://localhost:4000", {
   auth: { token }
@@ -20,16 +19,11 @@ socket.on("connect", () => {
   console.log("Socket connected:", socket.id);
 });
 
-socket.on("connect_error", (err) => {
-  console.error("Socket error:", err.message);
-});
 
 socket.on("disconnect", () => {
   console.log("Socket disconnected");
 });
 
-// ---------------- ROOM STATE ---------------- //
-let currentRoomId = null;
 
 // ---------------- JOIN ROOM (EMAIL BASED) ---------------- //
 joinBtn.addEventListener("click", () => {
@@ -46,16 +40,11 @@ joinBtn.addEventListener("click", () => {
   }
 
   // Create unique room ID (sorted emails)
-  const roomId = [myEmail, receiverEmail].sort().join("_");
-
-  // Leave previous room if exists
-  if (currentRoomId) {
-    socket.emit("leave_room", { roomId: currentRoomId });
-  }
+  roomId = [myEmail, receiverEmail].sort().join("_");
 
   // Join new room
   socket.emit("join_room", { roomId });
-  currentRoomId = roomId;
+ 
 
   messages.innerHTML = "";
   console.log("Joined room:", roomId);
@@ -66,23 +55,25 @@ form.addEventListener("submit", (e) => {
   e.preventDefault();
 
   const text = input.value.trim();
-  if (!text || !currentRoomId) return;
+  if (!text) return;
 
   socket.emit("new_message", {
-    roomId: currentRoomId,
+    roomId: roomId,
     message: text
   });
 
   input.value = "";
 });
 
-// ---------------- RECEIVE PERSONAL MESSAGE ---------------- //
-socket.off("receive_message"); // prevent duplicate listeners
+
+
 socket.on("receive_message", (data) => {
   const msgDiv = document.createElement("div");
   const type = data.email === myEmail ? "sent" : "received";
+
   msgDiv.classList.add('message', type);
   msgDiv.innerText = `${data.user}: ${data.text}`;
+  
   messages.appendChild(msgDiv);
   messages.scrollTop = messages.scrollHeight;
 });

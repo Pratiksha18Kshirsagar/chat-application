@@ -1,4 +1,4 @@
-const persnalChatHandler = (io, socket) => {
+const personalChatHandler = (io, socket) => {
 
   // 🔹 Join a private room
   socket.on("join_room", ({ roomId }) => {
@@ -18,4 +18,4 @@ const persnalChatHandler = (io, socket) => {
 
 }
 
-module.exports = persnalChatHandler;
+module.exports = personalChatHandler;
