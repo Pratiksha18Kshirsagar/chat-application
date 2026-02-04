@@ -1,39 +1,21 @@
-const personalChatHandler = (io, socket) => {
-  let currentRoom = null;
+const persnalChatHandler = (io, socket) => {
 
-  socket.on("join_room", ({ receiverId }) => {
-    const senderId = socket.user.id;
-
-    const roomId =
-      senderId < receiverId
-        ? `${senderId}_${receiverId}`
-        : `${receiverId}_${senderId}`;
-
-    // 🚨 leave previous room
-    if (currentRoom) {
-      socket.leave(currentRoom);
-    }
-
+  // 🔹 Join a private room
+  socket.on("join_room", ({ roomId }) => {
     socket.join(roomId);
-    currentRoom = roomId;
-
-    console.log(`User ${senderId} joined room ${roomId}`);
+    console.log(`${socket.user.Name} joined room ${roomId}`);
   });
 
-  socket.on("new_message", ({ receiverId, message }) => {
-    const senderId = socket.user.id;
-
-    const roomId =
-      senderId < receiverId
-        ? `${senderId}_${receiverId}`
-        : `${receiverId}_${senderId}`;
-
+  // 🔹 Send private message
+  socket.on("new_message", ({ roomId, message }) => {
     io.to(roomId).emit("receive_message", {
-      senderId,
-      senderName: socket.user.Name,
-      message
+      text: message,
+      user: socket.user.Name,
+      email: socket.user.Email,
+      time: new Date().toLocaleTimeString()
     });
   });
-};
 
-module.exports = personalChatHandler;
+}
+
+module.exports = persnalChatHandler;

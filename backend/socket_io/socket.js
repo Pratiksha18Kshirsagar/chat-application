@@ -29,7 +29,7 @@ const setupSocket = (server) => {
         });
 
         // attach handlers
-        chatHandler(io, socket);
+        // chatHandler(io, socket);
         personalChatHandler(io, socket);
 
         socket.on("disconnect", () => {

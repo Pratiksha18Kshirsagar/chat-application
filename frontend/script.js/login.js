@@ -12,6 +12,7 @@ form.addEventListener('submit', async (e) => {
             password
         });
         localStorage.setItem('token', response.data.token);
+        localStorage.setItem('email', email);
         alert('Login successful!');
         console.log('Login successful:', response.data);
         window.location.href = '../chatUi/index.html';

@@ -1,73 +1,88 @@
+// ---------------- DOM ELEMENTS ---------------- //
 const form = document.getElementById("chatForm");
 const input = document.getElementById("messageInput");
 const messages = document.getElementById("chatMessages");
 
+const searchInput = document.getElementById("searchEmail");
+const joinBtn = document.getElementById("joinBtn");
+
+// ---------------- CONFIG ---------------- //
 const baseurl = "http://localhost:4000";
 const token = localStorage.getItem("token");
+const myEmail = localStorage.getItem("email");
 
-// ---------------- SOCKET.IO ---------------- //
-const socket = io("http://localhost:4000", { auth: { token: token } });
-
-
-socket.on("connect_error", (err) => {
-  console.error(err.message);
+// ---------------- SOCKET.IO CONNECTION ---------------- //
+const socket = io("http://localhost:4000", {
+  auth: { token }
 });
 
 socket.on("connect", () => {
-  console.log("Connected to server:", socket.id);
+  console.log("Socket connected:", socket.id);
 });
 
-// receive message from server
-socket.on("message", (data) => {
-  console.log(data.user + ": " + data.message);
-  const msgdiv = document.createElement("div");
-  msgdiv.innerText = `${data.user}: ${data.message}`;
-  messages.appendChild(msgdiv);
-  messages.scrollTop = messages.scrollHeight;
+socket.on("connect_error", (err) => {
+  console.error("Socket error:", err.message);
 });
 
+socket.on("disconnect", () => {
+  console.log("Socket disconnected");
+});
 
+// ---------------- ROOM STATE ---------------- //
+let currentRoomId = null;
 
+// ---------------- JOIN ROOM (EMAIL BASED) ---------------- //
+joinBtn.addEventListener("click", () => {
+  const receiverEmail = searchInput.value.trim();
 
-// ---------------- FORM SUBMIT ---------------- //
-form.addEventListener("submit", async (e) => {
+  if (!receiverEmail) {
+    alert("Please enter an email");
+    return;
+  }
+
+  if (receiverEmail === myEmail) {
+    alert("You cannot chat with yourself");
+    return;
+  }
+
+  // Create unique room ID (sorted emails)
+  const roomId = [myEmail, receiverEmail].sort().join("_");
+
+  // Leave previous room if exists
+  if (currentRoomId) {
+    socket.emit("leave_room", { roomId: currentRoomId });
+  }
+
+  // Join new room
+  socket.emit("join_room", { roomId });
+  currentRoomId = roomId;
+
+  messages.innerHTML = "";
+  console.log("Joined room:", roomId);
+});
+
+// ---------------- SEND PERSONAL MESSAGE ---------------- //
+form.addEventListener("submit", (e) => {
   e.preventDefault();
 
   const text = input.value.trim();
-  if (!text) return;
+  if (!text || !currentRoomId) return;
 
-  // send message via socket (real-time)
-  socket.emit("message", text);
-
-  // save message in DB
-  await axios.post(
-    `${baseurl}/chat/message`,
-    { message: text },
-    { headers: { Authorization: token } }
-  );
+  socket.emit("new_message", {
+    roomId: currentRoomId,
+    message: text
+  });
 
   input.value = "";
 });
 
-// ---------------- LOAD OLD MESSAGES ---------------- //
-const loadMessages = async () => {
-  const res = await axios.get(`${baseurl}/chat/messages`, {
-    headers: { Authorization: token }
-  });
-
-  messages.innerHTML = "";
-  res.data.data.forEach((msg) => {
-    const msgdiv = document.createElement("div");
-    msgdiv.innerText = `${msg.userId} : ${msg.message}`;
-    messages.appendChild(msgdiv);
-  });
-
+// ---------------- RECEIVE PERSONAL MESSAGE ---------------- //
+socket.off("receive_message"); // prevent duplicate listeners
+socket.on("receive_message", (data) => {
+  const msgDiv = document.createElement("div");
+  const type = data.email === myEmail ? "sent" : "received";
+  msgDiv.classList.add('message', type);
+  msgDiv.innerText = `${data.user}: ${data.text}`;
+  messages.appendChild(msgDiv);
   messages.scrollTop = messages.scrollHeight;
-};
-
-// loadMessages();
-
-// ---------------- DISCONNECT ---------------- //
-socket.on("disconnect", () => {
-  console.log("Disconnected from server");
 });

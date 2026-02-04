@@ -87,3 +87,22 @@ body {
   border-radius: 4px;
   cursor: pointer;
 }
+
+.sent {
+  background: #ffffff;
+  margin-left: auto;   /* LEFT side */
+}
+
+.received {
+  background: #dcf8c6;
+  margin-right: auto;    /* RIGHT side */
+}
+
+.message {
+  max-width: 75%;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  word-wrap: break-word;
+}
