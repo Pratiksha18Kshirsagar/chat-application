@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <title>Chat Window</title>
@@ -8,34 +7,43 @@
 </head>
 
 <body>
-
   <div class="chat-container">
+
     <div class="chat-header">
       <h3>Chat Room</h3>
     </div>
-<div class="chat-search">
-  <input
-    type="email"
-    id="searchEmail"
-    placeholder="Enter user email to chat"
-  />
-  <button id="joinBtn">Join Chat</button>
-</div>
 
-    <div class="chat-messages" id="chatMessages">
-
+    <!-- PERSONAL CHAT SEARCH -->
+    <div class="chat-search">
+      <input type="email" id="searchEmail" placeholder="Enter user email to chat" />
+      <button id="joinBtn">Join Chat</button>
     </div>
 
+    <!-- GROUP CHAT -->
+    <div class="chat-search">
+      <input type="text" id="groupInput" placeholder="Enter group ID to chat" />
+      <button id="groupBtn">Group Chat</button>
+    </div>
+
+    <!-- CHAT MESSAGES -->
+    <div class="chat-messages" id="chatMessages"></div>
+
+    <!-- 🔥 STEP 10: MEDIA UPLOAD (ADD HERE) -->
+    <div class="chat-media">
+      <input type="file" id="mediaInput" />
+      <button id="sendMediaBtn">Send Media</button>
+    </div>
+
+    <!-- TEXT MESSAGE INPUT -->
     <form class="chat-input" id="chatForm">
       <input type="text" id="messageInput" placeholder="Type a message..." required />
       <button type="submit">Send</button>
     </form>
+
   </div>
+
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script src="../chatUi/script.js"></script>
-
-
 </body>
-
 </html>

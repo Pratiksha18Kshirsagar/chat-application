@@ -3,6 +3,7 @@ const socketAuthMiddleware = require("./middleware");
 
 const chatHandler = require("./handler/chat");
 const personalChatHandler = require("./handler/personalChat");
+const groupchatHandler = require("./handler/groupChat");
 
 const setupSocket = (server) => {
     const io = new Server(server, {
@@ -31,6 +32,10 @@ const setupSocket = (server) => {
         // attach handlers
         // chatHandler(io, socket);
         personalChatHandler(io, socket);
+        groupchatHandler(io, socket);
+
+
+        
 
         socket.on("disconnect", () => {
             console.log("User disconnected:", socket.user.id);

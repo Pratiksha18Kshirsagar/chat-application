@@ -6,6 +6,8 @@ const setupSocket = require("./socket_io/socket");
 
 const userRoutes = require("./routes/userRoutes");
 const chatRoutes = require("./routes/chatRoutes");
+const mediaRoutes = require("./routes/mediaRoute");
+
 require("./models/index");
 
 const app = express();
@@ -15,6 +17,7 @@ const PORT = 4000;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use("/media", mediaRoutes);
 
 // routes
 app.use("/user", userRoutes);

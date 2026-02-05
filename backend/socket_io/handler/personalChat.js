@@ -16,6 +16,16 @@ const personalChatHandler = (io, socket) => {
     });
   });
 
+  socket.on("media_message_sent", ({ roomId, mediaUrl, fileType }) => {
+    io.to(roomId).emit("media_message", {
+      senderName: socket.user.Name,
+      mediaUrl,
+      email: socket.user.Email,
+      fileType
+    });
+  });
+
+
 }
 
 module.exports = personalChatHandler;
